@@ -1,1 +1,1182 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cia Runesson</title>
+  <style>
+    :root {
+      --ink: #1a0020;
+      --paper: #e8005a;
+      --rust: #fff;
+      --gold: #ff80c0;
+      --grey: #ffd6ec;
+      --magenta: #cc0055;
+      --deep: #8b0030;
+    }
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* --- GRAIN OVERLAY --- */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* --- NAVIGATION --- */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.8rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(232,0,90,0.85);
+      backdrop-filter: blur(8px);
+    }
+
+    .nav-name {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .nav-links a {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #fff;
+      text-decoration: none;
+      opacity: 0.75;
+      transition: opacity 0.3s;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a:hover { opacity: 1; }
+
+    /* --- HERO --- */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 8rem 3rem 6rem 4rem;
+      position: relative;
+    }
+
+    .hero-left::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 10%; bottom: 10%;
+      width: 1px;
+      background: rgba(255,255,255,0.3);
+      opacity: 1;
+    }
+
+    .hero-eyebrow {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.2s forwards;
+    }
+
+    .hero-title {
+      font-size: clamp(4rem, 8vw, 9rem);
+      font-weight: 900;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      color: #1a0020;
+      opacity: 0;
+      animation: fadeUp 1s 0.4s forwards;
+    }
+
+    .hero-title em {
+      display: block;
+      font-style: italic;
+      color: #1a0020;
+    }
+
+    .hero-subtitle {
+      margin-top: 2.5rem;
+      font-size: 1.05rem;
+      font-weight: 300;
+      font-style: italic;
+      color: #1a0020;
+      max-width: 28ch;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 1s 0.65s forwards;
+    }
+
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 4rem 6rem 4rem;
+      opacity: 0;
+      animation: fadeIn 1.2s 0.8s forwards;
+    }
+
+    .hero-quote {
+      font-size: clamp(1.4rem, 2.5vw, 2.1rem);
+      font-style: italic;
+      font-weight: 400;
+      line-height: 1.55;
+      color: #fff;
+      position: relative;
+      padding-left: 2.5rem;
+      opacity: 0.9;
+    }
+
+    .hero-quote::before {
+      content: '"';
+      position: absolute;
+      left: 0; top: -0.3em;
+      font-size: 5rem;
+      color: #fff;
+      opacity: 0.3;
+      line-height: 1;
+      font-style: normal;
+    }
+
+    .hero-location {
+      margin-top: 3rem;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #1a0020;
+    }
+
+    /* --- SECTION BASE --- */
+    section {
+      padding: 8rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--deep);
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 60px;
+      height: 1px;
+      background: var(--deep);
+      opacity: 0.5;
+    }
+
+    /* --- ABOUT --- */
+    #om {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 6rem;
+      align-items: start;
+    }
+
+    .about-text {
+      font-size: 1.25rem;
+      font-weight: 400;
+      line-height: 1.85;
+      color: #1a0020;
+    }
+
+    .about-text p + p { margin-top: 1.5rem; }
+
+    .about-sidebar {
+      padding-top: 3.5rem;
+    }
+
+    .sidebar-block {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(26,0,32,0.2);
+    }
+
+    .sidebar-block:last-child { border-bottom: none; }
+
+    .sidebar-title {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #1a0020;
+      margin-bottom: 0.8rem;
+    }
+
+    .sidebar-content {
+      font-size: 0.95rem;
+      font-weight: 400;
+      line-height: 1.7;
+      color: #1a0020;
+      opacity: 0.85;
+    }
+
+    /* --- WORK / VERK --- */
+    #verk {
+      background: #1a0020;
+      color: #fff;
+      max-width: 100%;
+      padding: 8rem 4rem;
+    }
+
+    #verk .section-label { color: var(--gold); }
+    #verk .section-label::after { background: var(--gold); }
+
+    .work-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1px solid rgba(255,128,192,0.3);
+    }
+
+    .work-item {
+      padding: 3rem 2.5rem;
+      border-right: 1px solid rgba(255,128,192,0.3);
+      border-bottom: 1px solid rgba(255,128,192,0.3);
+      transition: background 0.4s;
+      cursor: default;
+    }
+
+    .work-item:nth-child(3n) { border-right: none; }
+    .work-item:nth-last-child(-n+3) { border-bottom: none; }
+
+    .work-item:hover { background: rgba(232,0,90,0.15); }
+
+    .work-year {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+      opacity: 0.9;
+      margin-bottom: 1rem;
+    }
+
+    .work-title {
+      font-size: 1.2rem;
+      font-style: italic;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      color: #fff;
+    }
+
+    .work-desc {
+      font-size: 0.85rem;
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(255,214,236,0.7);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* --- PLATSER --- */
+    #platser {
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .venues-header {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .venues-title {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      font-style: italic;
+      line-height: 1.2;
+      margin-bottom: 4rem;
+      max-width: 22ch;
+      color: #fff;
+    }
+
+    .venues-list {
+      columns: 3;
+      column-gap: 3rem;
+      list-style: none;
+    }
+
+    .venues-list li {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      padding: 0.5rem 0;
+      border-bottom: 1px dotted rgba(255,255,255,0.25);
+      color: #fff;
+      opacity: 0.85;
+      break-inside: avoid;
+    }
+
+    .venues-list li:hover { opacity: 1; color: #ffd6ec; }
+
+    /* --- UTBILDNING --- */
+    #utbildning {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 5rem;
+      align-items: start;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .edu-heading {
+      font-size: clamp(2.5rem, 4vw, 4rem);
+      font-weight: 900;
+      font-style: italic;
+      line-height: 1.1;
+      color: #fff;
+      position: sticky;
+      top: 6rem;
+    }
+
+    .edu-entries { display: flex; flex-direction: column; gap: 0; }
+
+    .edu-entry {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 2rem;
+      padding: 2rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      align-items: start;
+    }
+
+    .edu-year {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: #ffd6ec;
+      padding-top: 0.2rem;
+    }
+
+    .edu-info h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      font-style: italic;
+      margin-bottom: 0.35rem;
+      color: #fff;
+    }
+
+    .edu-info p {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: #ffd6ec;
+      opacity: 0.8;
+    }
+
+    /* --- KONTAKT --- */
+    #kontakt {
+      text-align: center;
+      padding: 10rem 4rem;
+      background: #8b0030;
+      max-width: 100%;
+    }
+
+    .contact-inner { max-width: 600px; margin: 0 auto; }
+
+    .contact-pre {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #ffd6ec;
+      margin-bottom: 2rem;
+    }
+
+    .contact-title {
+      font-size: clamp(3rem, 6vw, 6rem);
+      font-weight: 900;
+      font-style: italic;
+      line-height: 1.1;
+      color: #fff;
+      margin-bottom: 2rem;
+    }
+
+    .contact-line {
+      width: 60px;
+      height: 1px;
+      background: #ffd6ec;
+      margin: 2rem auto;
+      opacity: 0.5;
+    }
+
+    .contact-email {
+      font-size: 1.1rem;
+      font-style: italic;
+      color: #ffd6ec;
+      opacity: 0.9;
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      padding: 2rem 4rem;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      background: #1a0020;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer span {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #ffd6ec;
+      opacity: 0.6;
+    }
+
+    /* --- TABS --- */
+    .tab-bar {
+      max-width: 1200px;
+      margin: 0 auto 3rem;
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid rgba(255,128,192,0.25);
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      padding: 0.8rem 2rem;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,214,236,0.5);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .tab-btn:hover { color: #ffd6ec; }
+
+    .tab-btn.active {
+      color: #fff;
+      border-bottom-color: var(--gold);
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .tiny-intro {
+      max-width: 1200px;
+      margin: 0 auto 2.5rem;
+      font-size: 1rem;
+      font-style: italic;
+      color: rgba(255,214,236,0.75);
+      line-height: 1.7;
+    }
+
+    .cv-period {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      padding: 3rem 0 1.5rem;
+      border-top: 1px solid rgba(255,128,192,0.2);
+      margin-top: 1rem;
+    }
+
+    /* --- GALLERY --- */
+    .gallery-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .gallery-item {
+      position: relative;
+      aspect-ratio: 1;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+
+    .gallery-item:hover img { transform: scale(1.05); }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(232,0,90,0);
+      display: flex;
+      align-items: flex-end;
+      padding: 1rem;
+      transition: background 0.3s;
+    }
+
+    .gallery-item:hover .gallery-overlay { background: rgba(232,0,90,0.6); }
+
+    .gallery-overlay span {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #fff;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all 0.3s;
+    }
+
+    .gallery-item:hover .gallery-overlay span { opacity: 1; transform: none; }
+
+    /* --- LIGHTBOX --- */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26,0,32,0.95);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 2rem;
+    }
+
+    #lightbox.active { display: flex; }
+
+    #lightbox-img {
+      max-height: 80vh;
+      max-width: 90vw;
+      object-fit: contain;
+      box-shadow: 0 0 60px rgba(232,0,90,0.3);
+    }
+
+    #lightbox-caption {
+      margin-top: 1rem;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #ffd6ec;
+      opacity: 0.8;
+    }
+
+    #lightbox-close {
+      position: absolute;
+      top: 1.5rem; right: 2rem;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    #lightbox-close:hover { opacity: 1; }
+
+    @media (max-width: 900px) {
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* --- PROJEKT --- */
+    .proj-tab-bar { border-bottom-color: rgba(26,0,32,0.15); }
+    .proj-tab { color: rgba(26,0,32,0.4); }
+    .proj-tab:hover { color: var(--ink); }
+    .proj-tab.active { color: var(--ink); border-bottom-color: var(--paper) !important; border-bottom: 2px solid var(--magenta) !important; }
+
+    .proj-panel { display: none; }
+    .proj-panel.active { display: block; }
+
+    .proj-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 5rem;
+      padding-top: 3rem;
+      align-items: start;
+    }
+
+    .proj-title {
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 700;
+      font-style: italic;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+
+    .proj-desc {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--ink);
+      opacity: 0.8;
+    }
+
+    .proj-media {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .proj-subhead {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--magenta);
+      margin: 1.8rem 0 0.5rem;
+    }
+
+    .proj-placeholder {
+      aspect-ratio: 1;
+      border: 1px dashed rgba(26,0,32,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .proj-placeholder span {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0.3;
+    }
+
+    @media (max-width: 900px) {
+      .proj-content { grid-template-columns: 1fr; gap: 2rem; }
+      .proj-media { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* --- ANIMATIONS --- */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-left { padding: 7rem 2rem 3rem; }
+      .hero-left::after { display: none; }
+      .hero-right { padding: 2rem 2rem 5rem; }
+      #om { grid-template-columns: 1fr; gap: 3rem; }
+      .work-grid { grid-template-columns: 1fr; }
+      .work-item { border-right: none; }
+      .venues-list { columns: 2; }
+      #utbildning { grid-template-columns: 1fr; gap: 2rem; }
+      .edu-heading { position: static; }
+      nav { padding: 1.5rem 1.5rem; }
+      section { padding: 5rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <span class="nav-name">Cia Runesson</span>
+    <ul class="nav-links">
+      <li><a href="#om">Om</a></li>
+      <li><a href="#verk">Verk</a></li>
+      <li><a href="#projekt">Projekt</a></li>
+      <li><a href="#galleri">Bilder</a></li>
+      <li><a href="#platser">Platser</a></li>
+      <li><a href="#utbildning">Utbildning</a></li>
+      <li><a href="#kontakt">Kontakt</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow" style="display:none;">Scenkonstnär</p>
+      <h1 class="hero-title">
+        Cia <span style="display:inline;">Runesson</span>
+      </h1>
+      <p class="hero-subtitle">Verksam i gränslandet mellan teater och konst</p>
+    </div>
+    <div class="hero-right">
+      <p class="hero-location">Göteborg · Stockholm · Internationellt</p>
+    </div>
+  </div>
+
+  <!-- OM -->
+  <section id="om">
+    <div>
+      <p class="section-label">Om</p>
+      <div class="about-text reveal">
+        <p>Jag är scenkonstnär, född 1966 i Göteborg, och arbetar i gränslandet mellan teater och konst. Tillsammans med Lars Bergström driver jag <strong>Studio Sibbhult</strong>, en nystartad mötesplats i nordöstra Skåne för konstproduktion med inriktning på samtida stenkonst, skulptur och scenkonst. Vi utvecklar det platsspecifika och deltagarbaserade projektet <strong>Sibbhult Walking Village</strong>, en festivalperformance där hela byn används som scen.</p>
+        <p>Jag är projektledare och kulturproducent med över 20 års erfarenhet av att initiera, leda och genomföra publika konst- och scenkonstprojekt i samverkan med institutioner, kommuner och fria aktörer. Specialist på deltagarbaserade processer, platsbaserade format och publikarbete i både urbana och rurala miljöer. Van att arbeta från idé och metodutveckling till produktion, genomförande och publikt möte.</p>
+        <p>Jag är medgrundare och aktiv medlem i performancekollektivet <strong>Force Majeure</strong>, som sedan starten skapat liveinstallationer, föreställningar och konserter i hela Skandinavien och Europa.</p>
+        <p>Sedan 2017 är jag en av grundarna av <strong>Biologiska Museets Vänner</strong>, som arbetar för att bevara det unika Biologiska museet på Djurgården i Stockholm, sprida kunskap och intresse för museet och främja mötet mellan natur, konst och vetenskap i museets anda.</p>
+        <p>Tillsammans med Annikki Wahlöö och Benedikte Esperi drev jag det nomadiska scenkonstkollektivet <strong>The Tiny Festival Producers</strong>, baserat i Göteborg. Från 2016 till 2023 arrangerade vi <em>The Tiny Festival</em> på Teater Trixter och visades på bland annat GIBCA Extended, Kulturkalaset, Skövde Konstmuseum och Folk och Kultur.</p>
+      </div>
+    </div>
+    <div class="about-sidebar reveal">
+      <div class="sidebar-block">
+        <p class="sidebar-title">Kollektiv & Projekt</p>
+        <p class="sidebar-content">Studio Sibbhult (med Lars Bergström)<br>Force Majeure<br>Biologiska Museets Vänner (grundare, 2017)<br>The Tiny Festival Producers (med Annikki Wahlöö & Benedikte Esperi)<br>Sibbhult Walking Village</p>
+      </div>
+      <div class="sidebar-block">
+        <p class="sidebar-title">Roller</p>
+        <p class="sidebar-content">Scenkonstnär</p>
+      </div>
+      <div class="sidebar-block">
+        <p class="sidebar-title">Film & TV</p>
+        <p class="sidebar-content">Isblomma (2010)<br>Wallander: Vålnaden<br>Upp till kamp, SVT (2007)<br>Hem till byn, SVT</p>
+      </div>
+      <div class="sidebar-block">
+        <p class="sidebar-title">Webbplats</p>
+        <p class="sidebar-content">ciarunesson.com</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERK -->
+  <div id="verk">
+    <p class="section-label" style="max-width:1200px;margin:0 auto 3rem;">Urval uppdrag & projekt</p>
+
+    <div style="max-width:1200px;margin:0 auto;">
+
+      <!-- 2024– -->
+      <div class="cv-period">2024 – pågående</div>
+      <div class="work-grid">
+        <div class="work-item reveal">
+          <p class="work-year">2024–</p>
+          <h3 class="work-title">Studio Sibbhult</h3>
+          <p class="work-desc">Kulturproducent / initiativtagare. Konstnärlig plattform med fokus på konstproduktion i landsbygd, lokala samarbeten och publika processer.</p>
+        </div>
+        <div class="work-item reveal">
+          <p class="work-year">2024–</p>
+          <h3 class="work-title">Sibbhult Walking Village Festival</h3>
+          <p class="work-desc">Producent / projektledare. Medskapande festival i landsbygdsmiljö med deltagarbaserade performanceformat och lokala samarbeten.</p>
+        </div>
+        <div class="work-item reveal">
+          <p class="work-year">2024–</p>
+          <h3 class="work-title">Ghost in the Machine – Answering Machine Expanded</h3>
+          <p class="work-desc">Projektledare (delat med Lars Kristensen). Platsspecifik performancekonsert på Weld, Ulricehamns Rådhus, Åstol, Supermarket Art Fair och GIBCA Extended.</p>
+        </div>
+        <div class="work-item reveal">
+          <p class="work-year">2024–</p>
+          <h3 class="work-title">Malmö City Walking Music Festival / Malmö Gallerihelg</h3>
+          <p class="work-desc">Medverkande producent/konstnär (CFUK). Installationsperformance i festival- och gallerikontext.</p>
+        </div>
+        <div class="work-item reveal">
+          <p class="work-year">2024–</p>
+          <h3 class="work-title">Cirkus Extended</h3>
+          <p class="work-desc">Producent / utveckling. Konstnärsdrivet projekt i utvecklingsfas.</p>
+        </div>
+        <div class="work-item reveal">
+          <p class="work-year">2024–</p>
+          <h3 class="work-title">Force Majeure</h3>
+          <p class="work-desc">Medgrundare / producent. Nomadiskt scenkonstkollektiv (nybildat 2024).</p>
+        </div>
+      </div>
+
+      <!-- 2016–2023 -->
+      <div class="cv-period">2016 – 2023</div>
+      <div class="work-grid">
+        <div class="work-item reveal">
+          <p class="work-year">2016–2023</p>
+          <h3 class="work-title">Tiny Festival Producers / Tiny Festival</h3>
+          <p class="work-desc">Medgrundare / arrangör / producent. Festivaler 2016, 2017, 2019, 2021 (Expanded), 2022 samt Tiny på Hållnäs (2023).</p>
+        </div>
+        <div class="work-item reveal">
+          <p class="work-year">2022</p>
+          <h3 class="work-title">Center för Urban Konst, Malmö</h3>
+          <p class="work-desc">Workshopledare. Genomförde performanceworkshop.</p>
+        </div>
+        <div class="work-item reveal">
+          <p class="work-year">2021–2022</p>
+          <h3 class="work-title">Tipping Point (Bigert & Bergström)</h3>
+          <p class="work-desc">Medverkande / aktörsansvarig i bl.a. Rikstolvan (Hammenhög, 2021) och Djurgården/Stockholm 50+ (2022).</p>
+        </div>
+        <div class="work-item reveal">
+          <p class="work-year">2022–2023</p>
+          <h3 class="work-title">The Answering Machine</h3>
+          <p class="work-desc">Av Finn Iunker. Med Julia Rossohsko, Andes Skreia, Stella Sorotkho, Galyna Dutka och Iryna Novikova aka Insomnia Taxxi.</p>
+        </div>
+        <div class="work-item reveal">
+          <p class="work-year">2018</p>
+          <h3 class="work-title">Biologiska Museets Vänner</h3>
+          <p class="work-desc">Ordförande / programcurator. Medgrundare och ansvarig för kurerat vårprogram.</p>
+        </div>
+        <div class="work-item reveal">
+          <p class="work-year">2017–2018</p>
+          <h3 class="work-title">SKH / Transit / Weld</h3>
+          <p class="work-desc">Koordinator Post Epic Conference (SKH), stipendiat Transit Kulturinkubator, producentassistent Weld.</p>
+        </div>
+      </div>
+
+      <!-- Tidigare -->
+      <div class="cv-period">Tidigare (urval)</div>
+      <div class="work-grid">
+        <div class="work-item reveal">
+          <p class="work-year">2016</p>
+          <h3 class="work-title">Liljevalchs Konsthall</h3>
+          <p class="work-desc">Medcurator. Döden – en utställning om livet. Ansvar för samtalsserien i Sommarsalongen.</p>
+        </div>
+        <div class="work-item reveal">
+          <p class="work-year">2013</p>
+          <h3 class="work-title">Folkbaren, Göteborg</h3>
+          <p class="work-desc">Utställningsansvarig, Göteborgsutställningen.</p>
+        </div>
+        <div class="work-item reveal">
+          <p class="work-year">2010</p>
+          <h3 class="work-title">Isblomma</h3>
+          <p class="work-desc">Film. Skådespelarroll.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- GALLERI -->
+  <div id="galleri" style="background:#1a0020; padding: 6rem 4rem;">
+    <p class="section-label" style="max-width:1200px;margin:0 auto 2rem;color:var(--gold);">Bilder</p>
+
+    <!-- TABS -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('alla', this)">Alla bilder</button>
+      <button class="tab-btn" onclick="switchTab('tiny', this)">The Tiny Festival Producers</button>
+    </div>
+
+    <!-- TAB: ALLA -->
+    <div id="tab-alla" class="tab-panel active">
+      <div class="gallery-grid">
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img13.jpg" alt="The Tiny Festival"><div class="gallery-overlay"><span>The Tiny Festival</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img7.jpg" alt="Work in Progress"><div class="gallery-overlay"><span>Work in Progress</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img2.jpg" alt="The Tiny Festival Producers"><div class="gallery-overlay"><span>The Tiny Festival Producers</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img4.jpg" alt="Sibbhult Walking Village"><div class="gallery-overlay"><span>Sibbhult Walking Village</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img5.jpg" alt="Sibbhult Walking Village"><div class="gallery-overlay"><span>Sibbhult Walking Village</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img3.jpg" alt="Folk och Kultur"><div class="gallery-overlay"><span>Folk och Kultur</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img8.jpg" alt="Tiny Walking Hotel"><div class="gallery-overlay"><span>Tiny Walking Hotel</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img11.jpg" alt="Tiny Walking Hotel"><div class="gallery-overlay"><span>Tiny Walking Hotel</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img12.jpg" alt="Folk och Kultur – Eskilstuna"><div class="gallery-overlay"><span>Folk och Kultur, Eskilstuna</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img15.jpg" alt="Skövde Konstmuseum"><div class="gallery-overlay"><span>Skövde Konstmuseum</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img16.jpg" alt="Kulturkalaset Göteborg"><div class="gallery-overlay"><span>Kulturkalaset, Göteborg</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img6.jpg" alt="GIBCA Extended"><div class="gallery-overlay"><span>GIBCA Extended</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img10.jpg" alt="The Answering Machine"><div class="gallery-overlay"><span>The Answering Machine</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img9.jpg" alt="Performance"><div class="gallery-overlay"><span>Performance</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img1.jpg" alt="The Tiny Festival 2019"><div class="gallery-overlay"><span>The Tiny Festival 2019</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img14.jpg" alt="Performance"><div class="gallery-overlay"><span>Performance</span></div></div>
+      </div>
+    </div>
+
+    <!-- TAB: TINY FESTIVAL PRODUCERS -->
+    <div id="tab-tiny" class="tab-panel">
+      <div class="tiny-intro">
+        <p>The Tiny Festival Producers var ett nomadiskt scenkonstkollektiv grundat av Cia Runesson, Annikki Wahlöö och Benedikte Esperi, verksamt 2016–2023.</p>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img13.jpg" alt="The Tiny Festival – scen"><div class="gallery-overlay"><span>The Tiny Festival – scen</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img7.jpg" alt="Work in Progress"><div class="gallery-overlay"><span>Work in Progress</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img2.jpg" alt="The Tiny Festival Producers"><div class="gallery-overlay"><span>The Tiny Festival Producers</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img1.jpg" alt="The Tiny Festival 2019 – program"><div class="gallery-overlay"><span>The Tiny Festival 2019</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img3.jpg" alt="Folk och Kultur"><div class="gallery-overlay"><span>Folk och Kultur</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img8.jpg" alt="Tiny Walking Hotel"><div class="gallery-overlay"><span>Tiny Walking Hotel</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img11.jpg" alt="Tiny Walking Hotel"><div class="gallery-overlay"><span>Tiny Walking Hotel</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img12.jpg" alt="Folk och Kultur – Eskilstuna"><div class="gallery-overlay"><span>Folk och Kultur, Eskilstuna</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img15.jpg" alt="Skövde Konstmuseum"><div class="gallery-overlay"><span>Skövde Konstmuseum</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img16.jpg" alt="Kulturkalaset Göteborg"><div class="gallery-overlay"><span>Kulturkalaset, Göteborg</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img6.jpg" alt="GIBCA Extended"><div class="gallery-overlay"><span>GIBCA Extended</span></div></div>
+        <div class="gallery-item" onclick="openLightbox(this)"><img src="img10.jpg" alt="The Answering Machine"><div class="gallery-overlay"><span>The Answering Machine</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" src="" alt="">
+    <p id="lightbox-caption"></p>
+    <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  </div>
+
+  <!-- PROJEKT -->
+  <div id="projekt" style="background: var(--paper); padding: 8rem 4rem;">
+    <p class="section-label" style="max-width:1200px;margin:0 auto 2rem;">Projekt</p>
+
+    <div class="tab-bar proj-tab-bar">
+      <button class="tab-btn proj-tab active" onclick="switchProjTab('sibbhult', this)">Studio Sibbhult</button>
+      <button class="tab-btn proj-tab" onclick="switchProjTab('tiny', this)">The Tiny Festival Producers</button>
+      <button class="tab-btn proj-tab" onclick="switchProjTab('force', this)">Force Majeure</button>
+    </div>
+
+    <!-- SIBBHULT -->
+    <div id="proj-sibbhult" class="proj-panel active">
+      <div class="proj-content">
+        <div class="proj-text">
+          <h2 class="proj-title">Studio Sibbhult</h2>
+          <p class="proj-desc">Studio Sibbhult är en plattform för samtida scen- och stenkonst, driven av Cia Runesson och Lars Bergström (Bigert&Bergström). Studion är belägen i konstnären Bård Breiviks tidigare ateljé i Sibbhult, Östra Göinge — känt som "Stenriket" i nordöstra Skåne.</p>
+
+          <div class="proj-subhead">Sibbhult Walking Village</div>
+          <p class="proj-desc">En endagsfestival som kombinerar konst, lek och gemenskap i Sibbhult. Med temat <em>Homo Ludens – den lekande människan</em> samlas lokala ungdomar och professionella konstnärer för att skapa en gemensam festivalperformance där hela byn används som scen.</p>
+
+          <div class="proj-subhead">#1 — 2025</div>
+          <p class="proj-desc">Pilot med lokala ungdomar, en skulptur och ett piano. Ett graffimålat piano från Malmö (målat under Malmö City Walking Piano 2024) rullade genom Sibbhult och målades vitt under färden — frihetens färg, det oskrivna bladet.</p>
+
+          <div class="proj-subhead">#2 — 2026</div>
+          <p class="proj-desc">Festivalen utvecklas med professionella konstnärer och en mer komplex deltagarprocess. Planerade inslag: en procession med vagnar och skulpturtablåer ledda av Cia Runesson, en iscensatt övergiven lägenhet av Petra Holbæk, performativ cykelworkshop med Henrik Sova, pop up-språkskola, en vandringsvisning av skulpturparken med Sune Nordgren och konstnärspresentationer i Folkets Hus med Lars Bergström. I samarbete med Konstfrämjandet Skåne arrangeras en bussresa från Malmö med konstnärligt innehåll längs vägen.</p>
+
+          <div class="proj-subhead">Medverkande konstnärer 2026</div>
+          <p class="proj-desc">Petra Holbæk, Henrik Sova, Lars Bergström (Bigert&Bergström), Sune Nordgren — samt skulpturparkens konstnärer: Ola Åstrand, Kennet Klemens, Carl Johan De Geer, Carl-Fredrik Reuterswärd.</p>
+
+          <div class="proj-subhead">Samarbeten</div>
+          <p class="proj-desc">Folkets Hus Sibbhult, Sibbhult IF, Färe Montessorifritids, Konstfrämjandet Skåne, Östra Göinge Kommun.</p>
+
+          <div class="proj-subhead">Bakgrund</div>
+          <p class="proj-desc">På 1980-talet kom den norske konstnären Bård Breivik till Sibbhult och etablerade platsen som mötespunkt mellan konstnärliga visioner och industriellt kunnande. Björn Nordenhake och Ted Zaar har också bidragit till regionens unika arv inom sten och konst. Studio Sibbhult bygger vidare på denna tradition och skapar möjligheter för nya nationella, nordiska och internationella samarbeten.</p>
+        </div>
+        <div class="proj-media">
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="sibbhult3.jpg" alt="Studio Sibbhult"><div class="gallery-overlay"><span>Studio Sibbhult</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="sibbhult1.jpg" alt="Studio Sibbhult – ateljéträdgård"><div class="gallery-overlay"><span>Ateljéträdgården</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="sibbhult2.jpg" alt="Sibbhult Walking Village #1 – pianot"><div class="gallery-overlay"><span>Walking Village #1 – pianot</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img4.jpg" alt="Sibbhult Walking Village"><div class="gallery-overlay"><span>Sibbhult Walking Village</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img5.jpg" alt="Sibbhult Walking Village"><div class="gallery-overlay"><span>Sibbhult Walking Village</span></div></div>
+          <div class="proj-placeholder"><span>+ Lägg till bilder</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TINY FESTIVAL PRODUCERS -->
+    <div id="proj-tiny" class="proj-panel">
+      <div class="proj-content">
+        <div class="proj-text">
+          <h2 class="proj-title">The Tiny Festival Producers</h2>
+          <p class="proj-desc">Nomadiskt scenkonstkollektiv grundat av Cia Runesson, Annikki Wahlöö och Benedikte Esperi, verksamt 2016–2023. Arrangerade The Tiny Festival på Teater Trixter och visades på GIBCA Extended, Kulturkalaset, Skövde Konstmuseum, Folk och Kultur med flera.</p>
+        </div>
+        <div class="proj-media">
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img13.jpg" alt="The Tiny Festival"><div class="gallery-overlay"><span>The Tiny Festival</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img7.jpg" alt="Work in Progress"><div class="gallery-overlay"><span>Work in Progress</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img2.jpg" alt="The Tiny Festival Producers"><div class="gallery-overlay"><span>The Tiny Festival Producers</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img1.jpg" alt="The Tiny Festival 2019"><div class="gallery-overlay"><span>The Tiny Festival 2019</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img3.jpg" alt="Folk och Kultur"><div class="gallery-overlay"><span>Folk och Kultur</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img8.jpg" alt="Tiny Walking Hotel"><div class="gallery-overlay"><span>Tiny Walking Hotel</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img11.jpg" alt="Tiny Walking Hotel"><div class="gallery-overlay"><span>Tiny Walking Hotel</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img12.jpg" alt="Folk och Kultur Eskilstuna"><div class="gallery-overlay"><span>Folk och Kultur, Eskilstuna</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img15.jpg" alt="Skövde Konstmuseum"><div class="gallery-overlay"><span>Skövde Konstmuseum</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img16.jpg" alt="Kulturkalaset Göteborg"><div class="gallery-overlay"><span>Kulturkalaset, Göteborg</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img6.jpg" alt="GIBCA Extended"><div class="gallery-overlay"><span>GIBCA Extended</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img10.jpg" alt="The Answering Machine"><div class="gallery-overlay"><span>The Answering Machine</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORCE MAJEURE -->
+    <div id="proj-force" class="proj-panel">
+      <div class="proj-content">
+        <div class="proj-text">
+          <h2 class="proj-title">Force Majeure</h2>
+          <p class="proj-desc">Performancekollektiv med fokus på liveinstallationer, föreställningar och konserter. Verkat i Skandinavien och Europa med visningar på bl.a. Museum for Samtidskunst i Oslo, Göteborgs Konsthall, BIT Bergen, Nordiska Akvarellmuséet och Basement 6 i Shanghai.</p>
+        </div>
+        <div class="proj-media">
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img9.jpg" alt="Force Majeure – performance"><div class="gallery-overlay"><span>Performance</span></div></div>
+          <div class="gallery-item" onclick="openLightbox(this)"><img src="img14.jpg" alt="Force Majeure"><div class="gallery-overlay"><span>Performance</span></div></div>
+          <div class="proj-placeholder"><span>+ Lägg till bilder</span></div>
+          <div class="proj-placeholder"><span>+ Lägg till bilder</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLATSER -->
+  <section id="platser">
+    <div class="venues-header">
+      <p class="section-label">Scener & arenor</p>
+      <h2 class="venues-title reveal">Verken har visats på platser som</h2>
+      <ul class="venues-list reveal">
+        <li>Museum for Samtidskunst, Oslo</li>
+        <li>Göteborgs Konsthall</li>
+        <li>BIT, Bergen</li>
+        <li>Galleri Sub Bau, Göteborg</li>
+        <li>Nordiska Akvarellmuséet</li>
+        <li>Basement 6, Shanghai</li>
+        <li>Röda Sten Konsthall, Göteborg</li>
+        <li>Liljevahls, Stockholm</li>
+        <li>Atalante, Göteborg</li>
+        <li>Teater Trixter, Göteborg</li>
+        <li>GIBCA Extended</li>
+        <li>Kulturkalaset, Göteborg</li>
+        <li>Skövde Konstmuseum</li>
+        <li>Folk och Kultur</li>
+        <li>Nordic Summer University</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- UTBILDNING -->
+  <section id="utbildning">
+    <h2 class="edu-heading reveal">Utbild&shy;ning</h2>
+    <div class="edu-entries">
+      <div class="edu-entry reveal">
+        <span class="edu-year">2024</span>
+        <div class="edu-info">
+          <h3>Deltagarbaserad platsspecifik scenkonst</h3>
+          <p>Teaterhögskolan i Malmö, med Erik Pold</p>
+        </div>
+      </div>
+      <div class="edu-entry reveal">
+        <span class="edu-year">2023</span>
+        <div class="edu-info">
+          <h3>Förändringsverkstaden</h3>
+          <p>Statens Konstråd</p>
+        </div>
+      </div>
+      <div class="edu-entry reveal">
+        <span class="edu-year">2021–</span>
+        <div class="edu-info">
+          <h3>Att skapa ett konstnärligt forskningsprojekt</h3>
+          <p>Stockholms Konstnärliga Högskola</p>
+        </div>
+      </div>
+      <div class="edu-entry reveal">
+        <span class="edu-year">2019–2020</span>
+        <div class="edu-info">
+          <h3>Magister, Internationell scenkonst</h3>
+          <p>Stockholms Konstnärliga Högskola</p>
+        </div>
+      </div>
+      <div class="edu-entry reveal">
+        <span class="edu-year">2014–2016</span>
+        <div class="edu-info">
+          <h3>MFA, Contemporary Performative Arts</h3>
+          <p>Högskolan för Scen och Musik, Göteborgs Universitet</p>
+        </div>
+      </div>
+      <div class="edu-entry reveal">
+        <span class="edu-year">1993–1997</span>
+        <div class="edu-info">
+          <h3>Nordisk Teaterskole</h3>
+          <p>Århus, Danmark</p>
+        </div>
+      </div>
+      <div class="edu-entry reveal">
+        <span class="edu-year">1992–2010</span>
+        <div class="edu-info">
+          <h3>Kurser inom filosofi och scenkonst</h3>
+          <p>Södertörn, DI, Danshögskolan m.fl.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KONTAKT -->
+  <div id="kontakt">
+    <div class="contact-inner">
+      <p class="contact-pre">Kontakt</p>
+      <h2 class="contact-title">Säg hej.</h2>
+      <div class="contact-line"></div>
+      <p class="contact-email">ciarunesson.com</p>
+    </div>
+  </div>
+
+  <footer>
+    <span>Cia Runesson</span>
+    <span>Göteborg · Stockholm</span>
+    <span>© 2025</span>
+  </footer>
+
+  <script>
+    function switchProjTab(id, btn) {
+      document.querySelectorAll('.proj-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.proj-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById('proj-' + id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function switchTab(id, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function openLightbox(el) {
+      const img = el.querySelector('img');
+      const caption = el.querySelector('.gallery-overlay span');
+      document.getElementById('lightbox-img').src = img.src;
+      document.getElementById('lightbox-caption').textContent = caption.textContent;
+      document.getElementById('lightbox').classList.add('active');
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+    }
+    document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
